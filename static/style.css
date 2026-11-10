@@ -1,0 +1,535 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: #17213f;
+}
+
+
+/* LOGIN BACKGROUND */
+
+.login-body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 25px;
+    background:
+        radial-gradient(circle at 10% 15%, #dfe6ff, transparent 32%),
+        radial-gradient(circle at 90% 85%, #e8ddff, transparent 30%),
+        #f5f6fc;
+    overflow-x: hidden;
+}
+
+
+/* BACKGROUND ANIMATION */
+
+.background-animation {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: #b7c2ff;
+    filter: blur(80px);
+    opacity: 0.5;
+    top: -100px;
+    right: -80px;
+    animation: float 8s infinite alternate;
+}
+
+
+/* LOGIN CONTAINER */
+
+.login-container {
+    width: 100%;
+    max-width: 1000px;
+    min-height: 600px;
+    background: white;
+    border-radius: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    box-shadow: 0 25px 80px #27356b25;
+    position: relative;
+    z-index: 1;
+    animation: appear 0.8s ease;
+}
+
+
+/* LEFT SECTION */
+
+.left-section {
+    background: linear-gradient(
+        145deg,
+        #172247,
+        #354ba0,
+        #6979e8
+    );
+
+    color: white;
+    padding: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo {
+    font-size: 15px;
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+
+.left-content {
+    margin-top: 100px;
+    position: relative;
+    z-index: 2;
+}
+
+.small-heading {
+    color: #c2ccff;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.left-content h1 {
+    font: 800 48px/1.2 Manrope, sans-serif;
+    margin-bottom: 20px;
+}
+
+.left-content h1 span {
+    color: #bdc8ff;
+}
+
+.left-content p:last-child {
+    color: #d9dfff;
+    line-height: 1.8;
+}
+
+
+/* FLOATING CARDS */
+
+.floating-card {
+    position: absolute;
+    padding: 15px 20px;
+    background: #ffffff25;
+    border: 1px solid #ffffff50;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    font-size: 12px;
+    animation: bounce 4s infinite;
+}
+
+.card-one {
+    bottom: 130px;
+    right: 30px;
+}
+
+.card-two {
+    bottom: 65px;
+    right: 110px;
+    animation-delay: 2s;
+}
+
+
+/* RIGHT SECTION */
+
+.right-section {
+    padding: 55px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-logo {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: #5969df;
+}
+
+.login-form {
+    margin-top: 60px;
+}
+
+.form-heading {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #6878e8;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.login-form h2 {
+    font: 800 34px Manrope, sans-serif;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #8991a5;
+    margin: 10px 0 25px;
+}
+
+
+/* INPUTS */
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 18px 0 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e0e5f0;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #5969df;
+    box-shadow: 0 0 0 4px #5969df18;
+}
+
+
+/* BUTTON */
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(
+        100deg,
+        #5263dc,
+        #7885ef
+    );
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px #5969df55;
+}
+
+button span {
+    float: right;
+}
+
+
+/* ERROR MESSAGE */
+
+.error-message {
+    padding: 12px;
+    background: #fff0f1;
+    color: #ad3a4b;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+
+/* LOGIN INFO */
+
+.login-info {
+    font-size: 11px;
+    color: #8991a5;
+    margin-top: 22px;
+    line-height: 1.7;
+}
+
+
+/* DASHBOARD */
+
+.dashboard-body {
+    min-height: 100vh;
+    background: #f5f7fc;
+}
+
+.navbar {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid #e9edf5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+}
+
+.navbar h2 {
+    font: 800 19px Manrope;
+    color: #172247;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #5969df;
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.role {
+    padding: 8px 13px;
+    background: #eff0ff;
+    color: #5969df;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.admin-role {
+    background: #fff1e7;
+    color: #b56b2b;
+}
+
+
+/* MAIN DASHBOARD */
+
+.dashboard {
+    max-width: 1200px;
+    margin: 45px auto;
+    padding: 0 25px;
+}
+
+.welcome {
+    margin-bottom: 30px;
+}
+
+.welcome p {
+    color: #6878e8;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.welcome h1 {
+    font: 800 30px Manrope;
+    margin-bottom: 10px;
+}
+
+.welcome span {
+    font-size: 13px;
+    color: #8991a5;
+}
+
+
+/* DASHBOARD CARDS */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e9edf5;
+    box-shadow: 0 8px 25px #24315b08;
+    transition: 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-card p {
+    font-size: 12px;
+    color: #8991a5;
+    margin-bottom: 15px;
+}
+
+.dashboard-card h2 {
+    font: 700 22px Manrope;
+    color: #34447e;
+    overflow-wrap: anywhere;
+}
+
+
+/* DETAILS */
+
+.details {
+    background: white;
+    padding: 28px;
+    border-radius: 15px;
+    border: 1px solid #e9edf5;
+    box-shadow: 0 8px 25px #24315b08;
+}
+
+.details h2 {
+    font: 700 20px Manrope;
+    margin-bottom: 25px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px 20px;
+}
+
+.details-grid span {
+    display: block;
+    font-size: 11px;
+    color: #8991a5;
+    margin-bottom: 8px;
+}
+
+.details-grid h3 {
+    font-size: 14px;
+    color: #34447e;
+    overflow-wrap: anywhere;
+}
+
+
+/* ADMIN SEARCH */
+
+.search-box {
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+
+/* ADMIN TABLE */
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+th {
+    background: #f5f6fc;
+    color: #68738d;
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+th, td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+td {
+    color: #4c5874;
+}
+
+tr:hover {
+    background: #fafbff;
+}
+
+.footer-text {
+    color: #8991a5;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 11px;
+}
+
+
+/* ANIMATIONS */
+
+@keyframes appear {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+@keyframes float {
+
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(-40px, 40px);
+    }
+
+}
+
+@keyframes bounce {
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+}
+
+
+/* RESPONSIVE DESIGN */
+
+@media(max-width: 800px) {
+
+    .login-container {
+        grid-template-columns: 1fr;
+    }
+
+    .left-section {
+        min-height: 350px;
+    }
+
+    .left-content {
+        margin-top: 55px;
+    }
+
+    .right-section {
+        padding: 35px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width: 450px) {
+
+    .cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .dashboard-card {
+        padding: 15px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 17px;
+    }
+
+    .left-content h1 {
+        font-size: 36px;
+    }
+
+}

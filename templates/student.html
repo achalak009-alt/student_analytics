@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body class="dashboard-body">
+
+
+<header class="navbar">
+
+    <h2>✦ LearnSpace</h2>
+
+    <div>
+
+        <span class="role">STUDENT</span>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="dashboard">
+
+    <div class="welcome">
+
+        <p>STUDENT OVERVIEW</p>
+
+        <h1>
+            Welcome, {{ student.id }}!
+        </h1>
+
+        <span>
+            Here is your academic performance.
+        </span>
+
+    </div>
+
+
+    <div class="cards">
+
+        <div class="dashboard-card">
+
+            <p>Engagement Level</p>
+
+            <h2>
+                {{ student.engagement }}
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>Dropout Risk</p>
+
+            <h2>
+                {{ student.risk }}
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>Attendance</p>
+
+            <h2>
+                {{ student.attendance }}
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>Course Progress</p>
+
+            <h2>
+                {{ student.progress }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <section class="details">
+
+        <h2>Academic Details</h2>
+
+
+        <div class="details-grid">
+
+            <div>
+                <span>Student ID</span>
+                <h3>{{ student.id }}</h3>
+            </div>
+
+            <div>
+                <span>Course Category</span>
+                <h3>{{ student.course }}</h3>
+            </div>
+
+            <div>
+                <span>Major</span>
+                <h3>{{ student.major }}</h3>
+            </div>
+
+            <div>
+                <span>GPA</span>
+                <h3>{{ student.gpa }}</h3>
+            </div>
+
+            <div>
+                <span>Average Course Grade</span>
+                <h3>{{ student.grade }}</h3>
+            </div>
+
+            <div>
+                <span>Quiz Average</span>
+                <h3>{{ student.quiz }}</h3>
+            </div>
+
+            <div>
+                <span>Forum Interactions</span>
+                <h3>{{ student.forum }}</h3>
+            </div>
+
+            <div>
+                <span>Enrollment Status</span>
+                <h3>{{ student.status }}</h3>
+            </div>
+
+            <div>
+                <span>Activity Records</span>
+                <h3>{{ student.activity_records }}</h3>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <p class="footer-text">
+        Student Analytics Portal | Academic Performance
+    </p>
+
+</main>
+
+</body>
+</html>

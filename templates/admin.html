@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body class="dashboard-body">
+
+
+<header class="navbar">
+
+    <h2>✦ LearnSpace</h2>
+
+    <div>
+
+        <span class="role admin-role">ADMIN</span>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="dashboard">
+
+
+    <div class="welcome">
+
+        <p>ADMINISTRATION</p>
+
+        <h1>Admin Dashboard</h1>
+
+        <span>
+            Monitor all student academic records.
+        </span>
+
+    </div>
+
+
+    <div class="cards">
+
+        <div class="dashboard-card">
+
+            <p>Total Students</p>
+
+            <h2>{{ total }}</h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>High Risk</p>
+
+            <h2>{{ high_risk }}</h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>Medium Risk</p>
+
+            <h2>{{ medium_risk }}</h2>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <p>Low Risk</p>
+
+            <h2>{{ low_risk }}</h2>
+
+        </div>
+
+    </div>
+
+
+    <section class="details">
+
+        <h2>All Student Records</h2>
+
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search Student ID, Course or Major..."
+            class="search-box"
+        >
+
+
+        <div class="table-container">
+
+            <table id="studentTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Student ID</th>
+
+                        <th>Course</th>
+
+                        <th>Major</th>
+
+                        <th>Engagement</th>
+
+                        <th>Dropout Risk</th>
+
+                        <th>Attendance</th>
+
+                        <th>Grade</th>
+
+                        <th>Progress</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for s in records %}
+
+                    <tr>
+
+                        <td>{{ s.id }}</td>
+
+                        <td>{{ s.course }}</td>
+
+                        <td>{{ s.major }}</td>
+
+                        <td>{{ s.engagement }}</td>
+
+                        <td>{{ s.risk }}</td>
+
+                        <td>{{ s.attendance }}</td>
+
+                        <td>{{ s.grade }}</td>
+
+                        <td>{{ s.progress }}</td>
+
+                        <td>{{ s.status }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p id="noResults" hidden>
+            No matching students found.
+        </p>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const search = document.getElementById("search");
+
+const rows = document.querySelectorAll(
+    "#studentTable tbody tr"
+);
+
+const noResults = document.getElementById("noResults");
+
+search.addEventListener("input", function() {
+
+    let query = this.value.toLowerCase();
+
+    let visible = 0;
+
+    rows.forEach(function(row) {
+
+        let match = row.innerText
+            .toLowerCase()
+            .includes(query);
+
+        row.hidden = !match;
+
+        if (match) {
+            visible++;
+        }
+
+    });
+
+    noResults.hidden = visible !== 0;
+
+});
+
+</script>
+
+
+</body>
+</html>

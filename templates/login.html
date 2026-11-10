@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Analytics Portal</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body class="login-body">
+
+<div class="background-animation"></div>
+
+<div class="login-container">
+
+    <div class="left-section">
+
+        <div class="logo">
+            ✦ LEARNSPACE
+        </div>
+
+        <div class="left-content">
+
+            <p class="small-heading">
+                STUDENT ANALYTICS PORTAL
+            </p>
+
+            <h1>
+                Make Your
+                <span>Progress Visible.</span>
+            </h1>
+
+            <p>
+                Track your academic performance,
+                understand your learning journey
+                and stay focused on your goals.
+            </p>
+
+        </div>
+
+        <div class="floating-card card-one">
+            ↗ Track Your Progress
+        </div>
+
+        <div class="floating-card card-two">
+            ✧ Focus On Your Goals
+        </div>
+
+    </div>
+
+
+    <div class="right-section">
+
+        <div class="form-logo">
+            ✦ STUDENT PORTAL
+        </div>
+
+        <div class="login-form">
+
+            <p class="form-heading">
+                YOUR LEARNING SPACE
+            </p>
+
+            <h2>Welcome Back!</h2>
+
+            <p class="subtitle">
+                Please enter your login details.
+            </p>
+
+
+            {% with messages =
+                get_flashed_messages(with_categories=true) %}
+
+                {% for category, message in messages %}
+
+                    <div class="error-message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+
+            <form method="POST">
+
+                <label>Student ID / Admin ID</label>
+
+                <input
+                    type="text"
+                    name="student_id"
+                    placeholder="Enter your ID"
+                    required
+                >
+
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+
+                <button type="submit">
+
+                    Sign In
+
+                    <span>→</span>
+
+                </button>
+
+            </form>
+
+
+            <p class="login-info">
+
+                Students: Use your Student ID.
+
+                Admin: Use your Admin ID.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

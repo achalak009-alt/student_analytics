@@ -1,160 +1,458 @@
-from flask import Flask, jsonify, request, send_file
-import pandas as pd
-import numpy as np
+import os
+import hmac
 from pathlib import Path
+from functools import wraps
+
+import pandas as pd
+
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash
+)
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "change-this-secret-before-deployment"
+)
+
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+# --------------------------------
+# LOGIN CONFIGURATION
+# --------------------------------
+
+ADMIN_ID = "admin"
+ADMIN_PASSWORD = "Admin@123"
+
+STUDENT_PASSWORD = "Student@123"
+
+# --------------------------------
+# LOAD DATASET
+# --------------------------------
+
 DATA_FILE = Path(__file__).with_name("student_data.csv")
 
-def prepare_data(raw):
-    df = raw.copy()
-    # The dashboard expects the workbook's documented column names.
-    required = ["student_id", "course_category", "Engagement_Level", "dropout_risk",
-                "forum_interactions", "attendance_rate", "avg_course_grade",
-                "course_progress_percent", "enrollment_status"]
-    missing = [c for c in required if c not in df.columns]
-    if missing:
-        raise ValueError("Missing required columns: " + ", ".join(missing))
-    optional = ["forum_participation_count", "assignment_submission_rate", "GPA",
-                "video_completion_rate", "video_watch_percent", "lms_logins_past_month",
-                "login_frequency_per_week", "avg_session_minutes", "risk_level",
-                "Original_Engagement_Level", "action_type", "major", "device_type",
-                "Engagement_Score_Proxy", "age"]
-    for col in optional:
-        if col not in df.columns:
-            df[col] = np.nan
-    numeric = ["attendance_rate", "assignment_submission_rate", "avg_course_grade", "GPA",
-               "course_progress_percent", "video_completion_rate", "video_watch_percent",
-               "forum_interactions", "forum_participation_count", "lms_logins_past_month",
-               "login_frequency_per_week", "avg_session_minutes", "Engagement_Score_Proxy"]
-    for col in numeric:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["student_id"] = df["student_id"].astype(str)
-    return df
+if not DATA_FILE.exists():
+    raise FileNotFoundError(
+        "student_data.csv not found. Keep it beside app.py."
+    )
 
-def load_data():
-    raw = pd.read_csv(DATA_FILE)
-    return prepare_data(raw)
+df = pd.read_csv(DATA_FILE)
 
-DF = load_data()
+LOGIN_COLUMN = "Student_ID"
 
+if LOGIN_COLUMN not in df.columns:
+    raise ValueError("Student_ID column not found in dataset.")
 
-def clean(v):
-    if pd.isna(v): return None
-    if isinstance(v, (np.integer,)): return int(v)
-    if isinstance(v, (np.floating,)): return round(float(v), 3)
-    return str(v)
+df[LOGIN_COLUMN] = (
+    df[LOGIN_COLUMN]
+    .fillna("")
+    .astype(str)
+    .str.strip()
+)
 
-def stats_for(df):
-    n=len(df)
-    active=(df["Engagement_Level"].astype(str).str.lower()=="active").sum()
-    passive=(df["Engagement_Level"].astype(str).str.lower()=="passive").sum()
-    risk=df["dropout_risk"].astype(str).str.lower().isin(["high","medium"]).sum()
-    return {
-        "students":n, "active":int(active), "passive":int(passive),
-        "active_pct":round(active/n*100,1) if n else 0,
-        "forum_low":int((df["forum_interactions"].fillna(0)<10).sum()),
-        "at_risk":int(risk), "avg_attendance":round(df["attendance_rate"].mean()*100,1) if n else 0,
-        "avg_grade":round(df["avg_course_grade"].mean(),1) if n else 0,
-        "avg_progress":round(df["course_progress_percent"].mean(),1) if n else 0,
-        "avg_video_completion":round(df["video_completion_rate"].mean()*100,1) if n else 0,
-        "avg_logins":round(df["lms_logins_past_month"].mean(),1) if n else 0,
-        "avg_session":round(df["avg_session_minutes"].mean(),1) if n else 0
+df = df[df[LOGIN_COLUMN] != ""].copy()
+
+# --------------------------------
+# CREATE ONE PROFILE PER STUDENT
+# --------------------------------
+
+NUMERIC_FIELDS = [
+    "GPA",
+    "attendance_rate",
+    "avg_course_grade",
+    "course_progress_percent",
+    "forum_interactions",
+    "quiz_average_score",
+    "video_completion_rate",
+    "assignment_submission_rate",
+    "lms_logins_past_month",
+    "login_frequency_per_week"
+]
+
+CATEGORY_FIELDS = [
+    "course_category",
+    "major",
+    "Engagement_Level",
+    "dropout_risk",
+    "enrollment_status",
+    "device_type"
+]
+
+profile_rows = []
+
+for student_id, group in df.groupby(
+    LOGIN_COLUMN,
+    sort=True
+):
+
+    profile = {
+        "Student_ID": student_id
     }
 
-@app.route("/")
-def home():
-    return send_file(Path(__file__).with_name("index.html"))
+    # Average numerical values
+    for col in NUMERIC_FIELDS:
+
+        if col in group.columns:
+
+            values = pd.to_numeric(
+                group[col],
+                errors="coerce"
+            ).dropna()
+
+            if not values.empty:
+                profile[col] = round(
+                    float(values.mean()), 2
+                )
+            else:
+                profile[col] = "—"
+
+    # Most common categorical values
+    for col in CATEGORY_FIELDS:
+
+        if col in group.columns:
+
+            modes = (
+                group[col]
+                .dropna()
+                .astype(str)
+                .mode()
+            )
+
+            profile[col] = (
+                modes.iloc[0]
+                if not modes.empty
+                else "—"
+            )
+
+    profile["activity_records"] = len(group)
+
+    profile_rows.append(profile)
 
 
-@app.route("/api/upload", methods=["POST"])
-def upload_dataset():
-    global DF
-    file = request.files.get("dataset")
-    if not file or not file.filename:
-        return jsonify({"error": "Choose an Excel or CSV file first."}), 400
-    ext = Path(file.filename).suffix.lower()
-    if ext not in [".xlsx", ".xls", ".csv"]:
-        return jsonify({"error": "Supported formats: .xlsx, .xls and .csv"}), 400
-    try:
-        if ext == ".csv":
-            raw = pd.read_csv(file)
-        else:
-            book = pd.ExcelFile(file)
-            sheet = "Dataset" if "Dataset" in book.sheet_names else book.sheet_names[0]
-            raw = pd.read_excel(book, sheet_name=sheet)
-        if raw.empty:
-            raise ValueError("The selected file has no data rows.")
-        prepared = prepare_data(raw)
-        DF = prepared
-        return jsonify({"message": f"Successfully loaded {len(DF):,} student records.",
-                        "rows": len(DF), "columns": len(DF.columns),
-                        "filename": file.filename})
-    except Exception as exc:
-        return jsonify({"error": str(exc)}), 400
+profiles = pd.DataFrame(profile_rows).fillna("—")
 
-@app.route("/api/dashboard")
-def dashboard():
-    df=DF.copy()
-    category=request.args.get("category","All")
-    engagement=request.args.get("engagement","All")
-    if category!="All": df=df[df["course_category"].astype(str)==category]
-    if engagement!="All": df=df[df["Engagement_Level"].astype(str)==engagement]
-    def counts(col):
-        s=df[col].fillna("Unknown").astype(str).value_counts()
-        return [{"label":str(k),"value":int(v)} for k,v in s.items()]
-    def avg_by(col, metric):
-        x=df.groupby(col)[metric].mean().dropna().sort_values(ascending=False)
-        return [{"label":str(k),"value":round(float(v),2)} for k,v in x.items()]
-    fields=["student_id","course_category","major","Engagement_Level","dropout_risk","enrollment_status",
-            "forum_interactions","attendance_rate","assignment_submission_rate","avg_course_grade",
-            "course_progress_percent","video_completion_rate","lms_logins_past_month","login_frequency_per_week",
-            "avg_session_minutes","risk_level"]
-    rows=[]
-    for _,r in df[fields].iterrows():
-        rows.append({k:clean(r[k]) for k in fields})
-    forum_low=df[df["forum_interactions"].fillna(0)<10]
-    passive=df[df["Engagement_Level"].astype(str)=="Passive"]
-    highrisk=df[df["dropout_risk"].astype(str).str.lower()=="high"]
-    return jsonify({
-        "stats":stats_for(df),
-        "categories":["All"]+sorted(DF["course_category"].dropna().astype(str).unique().tolist()),
-        "engagement_types":["All","Active","Passive"],
-        "charts":{
-            "engagement":counts("Engagement_Level"),
-            "forum": [{"label":"Low (0–9)","value":int((df.forum_interactions.fillna(0)<10).sum())},
-                      {"label":"Moderate (10–29)","value":int(df.forum_interactions.between(10,29).sum())},
-                      {"label":"High (30+)","value":int((df.forum_interactions>=30).sum())}],
-            "dropout":counts("dropout_risk"),
-            "enrollment":counts("enrollment_status"),
-            "course":counts("course_category"),
-            "risk_level":counts("risk_level"),
-            "engagement_by_course":avg_by("course_category","Engagement_Score_Proxy"),
-            "forum_by_course":avg_by("course_category","forum_interactions"),
-            "grade_by_engagement":avg_by("Engagement_Level","avg_course_grade"),
-            "progress_by_engagement":avg_by("Engagement_Level","course_progress_percent"),
-            "activity":counts("action_type"),
-            "major":counts("major")
-        },
-        "insights":{
-            "forum_low_pct":round(len(forum_low)/len(df)*100,1) if len(df) else 0,
-            "passive_count":len(passive),
-            "highrisk_count":len(highrisk),
-            "proxy_note":"Active/Passive labels are proxy labels derived from eight activity indicators, not verified ground truth."
-        },
-        "students":rows
-    })
+# --------------------------------
+# AUTHENTICATION DECORATORS
+# --------------------------------
 
-@app.route("/api/student/<student_id>")
-def student_detail(student_id):
-    found=DF[DF["student_id"].astype(str)==str(student_id)]
-    if found.empty: return jsonify({"error":"Student not found"}),404
-    r=found.iloc[0]
-    cols=["student_id","course_category","major","age","GPA","Engagement_Level","Engagement_Score_Proxy",
-          "forum_interactions","forum_participation_count","attendance_rate","assignment_submission_rate",
-          "avg_course_grade","course_progress_percent","video_completion_rate","video_watch_percent",
-          "lms_logins_past_month","login_frequency_per_week","avg_session_minutes","dropout_risk","enrollment_status"]
-    return jsonify({c:clean(r[c]) for c in cols})
+def student_required(view):
+
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+
+        if session.get("role") != "student":
+            return redirect(url_for("login"))
+
+        return view(*args, **kwargs)
+
+    return wrapped
+
+
+def admin_required(view):
+
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+
+        if session.get("role") != "admin":
+            return redirect(url_for("login"))
+
+        return view(*args, **kwargs)
+
+    return wrapped
+
+
+# --------------------------------
+# FORMAT DATA
+# --------------------------------
+
+def get_value(row, key, percent=False):
+
+    value = row.get(key, "—")
+
+    if value is None or pd.isna(value):
+        return "—"
+
+    if isinstance(value, (int, float)):
+
+        if percent and key == "attendance_rate":
+            if value <= 1:
+                value = value * 100
+
+        if percent:
+            return f"{value:.1f}%"
+
+        return f"{value:.2f}"
+
+    return str(value)
+
+
+# --------------------------------
+# LOGIN PAGE
+# --------------------------------
+
+@app.route("/", methods=["GET", "POST"])
+def login():
+
+    if session.get("role") == "admin":
+        return redirect(url_for("admin_dashboard"))
+
+    if session.get("role") == "student":
+        return redirect(url_for("student_dashboard"))
+
+    if request.method == "POST":
+
+        login_id = request.form.get(
+            "student_id", ""
+        ).strip()
+
+        password = request.form.get(
+            "password", ""
+        )
+
+        # ADMIN LOGIN
+
+        if (
+            hmac.compare_digest(login_id, ADMIN_ID)
+            and hmac.compare_digest(password, ADMIN_PASSWORD)
+        ):
+
+            session.clear()
+
+            session["role"] = "admin"
+            session["login_id"] = ADMIN_ID
+
+            return redirect(
+                url_for("admin_dashboard")
+            )
+
+        # STUDENT LOGIN
+
+        found = profiles[
+            profiles["Student_ID"]
+            .astype(str)
+            .str.casefold()
+            == login_id.casefold()
+        ]
+
+        if (
+            not found.empty
+            and hmac.compare_digest(
+                password,
+                STUDENT_PASSWORD
+            )
+        ):
+
+            session.clear()
+
+            session["role"] = "student"
+
+            session["login_id"] = str(
+                found.iloc[0]["Student_ID"]
+            )
+
+            return redirect(
+                url_for("student_dashboard")
+            )
+
+        flash(
+            "Invalid Student ID or Password!",
+            "error"
+        )
+
+    return render_template("login.html")
+
+
+# --------------------------------
+# STUDENT DASHBOARD
+# --------------------------------
+
+@app.route("/student")
+@student_required
+def student_dashboard():
+
+    found = profiles[
+        profiles["Student_ID"].astype(str)
+        == session.get("login_id")
+    ]
+
+    if found.empty:
+
+        session.clear()
+
+        return redirect(url_for("login"))
+
+    row = found.iloc[0]
+
+    student = {
+
+        "id": get_value(row, "Student_ID"),
+
+        "course": get_value(
+            row, "course_category"
+        ),
+
+        "major": get_value(
+            row, "major"
+        ),
+
+        "engagement": get_value(
+            row, "Engagement_Level"
+        ),
+
+        "risk": get_value(
+            row, "dropout_risk"
+        ),
+
+        "attendance": get_value(
+            row, "attendance_rate", True
+        ),
+
+        "grade": get_value(
+            row, "avg_course_grade"
+        ),
+
+        "progress": get_value(
+            row, "course_progress_percent", True
+        ),
+
+        "forum": get_value(
+            row, "forum_interactions"
+        ),
+
+        "status": get_value(
+            row, "enrollment_status"
+        ),
+
+        "gpa": get_value(
+            row, "GPA"
+        ),
+
+        "quiz": get_value(
+            row, "quiz_average_score"
+        ),
+
+        "activity_records": get_value(
+            row, "activity_records"
+        )
+    }
+
+    return render_template(
+        "student.html",
+        student=student
+    )
+
+
+# --------------------------------
+# ADMIN DASHBOARD
+# --------------------------------
+
+@app.route("/admin")
+@admin_required
+def admin_dashboard():
+
+    records = []
+
+    for _, row in profiles.iterrows():
+
+        records.append({
+
+            "id": get_value(
+                row, "Student_ID"
+            ),
+
+            "course": get_value(
+                row, "course_category"
+            ),
+
+            "major": get_value(
+                row, "major"
+            ),
+
+            "engagement": get_value(
+                row, "Engagement_Level"
+            ),
+
+            "risk": get_value(
+                row, "dropout_risk"
+            ),
+
+            "attendance": get_value(
+                row, "attendance_rate", True
+            ),
+
+            "grade": get_value(
+                row, "avg_course_grade"
+            ),
+
+            "progress": get_value(
+                row, "course_progress_percent", True
+            ),
+
+            "status": get_value(
+                row, "enrollment_status"
+            )
+
+        })
+
+    total = len(profiles)
+
+    risk_values = (
+        profiles["dropout_risk"]
+        .astype(str)
+        .str.lower()
+    )
+
+    high_risk = int(
+        (risk_values == "high").sum()
+    )
+
+    medium_risk = int(
+        (risk_values == "medium").sum()
+    )
+
+    low_risk = int(
+        (risk_values == "low").sum()
+    )
+
+    return render_template(
+        "admin.html",
+        records=records,
+        total=total,
+        high_risk=high_risk,
+        medium_risk=medium_risk,
+        low_risk=low_risk
+    )
+
+
+# --------------------------------
+# LOGOUT
+# --------------------------------
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("login"))
+
+
+# --------------------------------
+# RUN APPLICATION
+# --------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True
+    )
