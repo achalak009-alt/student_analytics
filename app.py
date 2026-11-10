@@ -1,10 +1,13 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 import pandas as pd
 import numpy as np
 from pathlib import Path
 
-app = Flask(__name__)
-DATA_FILE = Path(__file__).with_name("student_data.csv")
+BASE_DIR = Path(__file__).resolve().parent
+DIST_DIR = BASE_DIR / "dist"
+
+app = Flask(__name__, static_folder=str(DIST_DIR / "assets"), static_url_path="/assets")
+DATA_FILE = BASE_DIR / "student_data.csv"
 
 def prepare_data(raw):
     df = raw.copy()
@@ -64,7 +67,16 @@ def stats_for(df):
 
 @app.route("/")
 def home():
-    return send_file(Path(__file__).with_name("index.html"))
+    dist_index = DIST_DIR / "index.html"
+    if dist_index.exists():
+        return send_file(dist_index)
+    return send_file(BASE_DIR / "index.html")
+
+@app.route("/<path:filename>")
+def serve_static(filename):
+    if (DIST_DIR / filename).exists():
+        return send_file(DIST_DIR / filename)
+    return send_file(DIST_DIR / "index.html") if (DIST_DIR / "index.html").exists() else ("Not found", 404)
 
 
 @app.route("/api/upload", methods=["POST"])
