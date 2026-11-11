@@ -35,15 +35,15 @@ export const PlatformStatusView = () => {
         <div className="max-w-3xl space-y-3 relative z-10">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-burgundy-900 text-champagne-300 text-xs font-semibold tracking-wider uppercase">
             <Activity className="w-3.5 h-3.5 text-champagne-400 animate-pulse" />
-            <span>Sector 4 · Telemetry & System Architecture</span>
+            <span>Sector 4 · ASPIRE Telemetry & Multi-Modal Architecture</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-burgundy-900 leading-tight">
-            Platform Infrastructure & Health
+            ASPIRE Platform Infrastructure & Health
           </h1>
 
           <p className="text-sm text-charcoal-700 font-normal leading-relaxed max-w-2xl">
-            Real-time telemetry monitoring the data pipelines, Flask API endpoints, in-memory cache layers, and CSV dataset consistency.
+            Enterprise telemetry monitoring multi-modal data ingestion streams, Flask REST endpoints, in-memory caching layers, and the verified 500-student dataset.
           </p>
 
           <div className="pt-2 flex items-center space-x-4">
@@ -168,3 +168,4 @@ export const PlatformStatusView = () => {
     </div>
   );
 };
+

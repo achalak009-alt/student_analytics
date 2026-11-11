@@ -31,20 +31,22 @@ export const Navbar = ({
         <div className="flex items-center justify-between h-20">
           
           {/* Brand Identity */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { setActiveSector('workspace'); setActiveEngineId(null); }}>
-            <div className="w-11 h-11 rounded-xl gold-gradient-bg p-0.5 flex items-center justify-center shadow-gold-glow">
+          <div className="flex items-center space-x-3.5 cursor-pointer" onClick={() => { setActiveSector('workspace'); setActiveEngineId(null); }}>
+            <div className="w-11 h-11 rounded-xl gold-gradient-bg p-0.5 flex items-center justify-center shadow-gold-glow flex-shrink-0">
               <div className="w-full h-full bg-burgundy-900 rounded-[10px] flex items-center justify-center">
-                <span className="font-serif font-bold text-champagne-400 text-xl tracking-tight">A</span>
+                <span className="font-serif font-bold text-champagne-400 text-lg tracking-tight">✦</span>
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-serif font-bold text-xl tracking-wide text-cream-100">AURA</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-champagne-400 bg-burgundy-900/80 px-2 py-0.5 rounded-full border border-champagne-500/30">
-                  Analytics
+                <span className="font-serif font-extrabold text-2xl tracking-wider text-cream-100">ASPIRE</span>
+                <span className="text-[9px] uppercase font-bold tracking-widest text-champagne-400 bg-burgundy-900/90 px-2 py-0.5 rounded-full border border-champagne-500/40 hidden sm:inline-block">
+                  Multi-Modal EdTech
                 </span>
               </div>
-              <p className="text-[11px] text-cream-300 font-light tracking-wider">Luxury Student Intelligence</p>
+              <p className="text-[10px] text-cream-300/90 font-medium tracking-tight max-w-[280px] sm:max-w-md truncate">
+                Automated Student Performance Identification for Risk and Engagement
+              </p>
             </div>
           </div>
 
@@ -196,3 +198,4 @@ export const Navbar = ({
     </header>
   );
 };
+

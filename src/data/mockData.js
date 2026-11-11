@@ -78,7 +78,7 @@ export const ENGINES_DATA = [
     id: "forum",
     number: "01",
     title: "Forum & Isolation Dynamics",
-    category: "Social Engagement",
+    category: "Modality I · Discursive",
     subtitle: "Peer Discursive Velocity & Cognitive Isolation Diagnostics",
     tagline: "Track participation frequency and identify silent attrition signals.",
     accentColor: "#D4AF37",
@@ -112,7 +112,7 @@ export const ENGINES_DATA = [
     id: "engagement",
     number: "02",
     title: "Active vs. Passive Engagement",
-    category: "Behavioral Classification",
+    category: "Modality II · Behavioral",
     subtitle: "Multi-indicator Behavioral Proxy & Deep Work Absorption",
     tagline: "Distinguish between superficial click-throughs and true cognitive mastery.",
     accentColor: "#581825",
@@ -146,7 +146,7 @@ export const ENGINES_DATA = [
     id: "risk",
     number: "03",
     title: "At-Risk Diagnostic Matrix",
-    category: "Predictive Analytics",
+    category: "Modality III · Predictive Risk",
     subtitle: "Attrition Warning Indicators & Multi-Tier Safety Guardrails",
     tagline: "Early vulnerability detection synthesizing attendance decay and quiz volatility.",
     accentColor: "#842437",
@@ -180,7 +180,7 @@ export const ENGINES_DATA = [
     id: "mooc",
     number: "04",
     title: "MOOC Behavioral Mastery",
-    category: "Autonomous Pacing",
+    category: "Modality IV · Temporal Pacing",
     subtitle: "Asynchronous Progression Cadence & Knowledge Longevity",
     tagline: "Dissect self-directed pacing, resource retrieval bursts, and retention durability.",
     accentColor: "#9E8022",
@@ -232,3 +232,4 @@ export const PLATFORM_STATUS_DATA = {
     { name: "What-If Forecasting Engine", status: "Ready", latency: "19ms", uptime: "99.95%" }
   ]
 };
+

@@ -172,7 +172,7 @@ export const TopicWindow = ({
             <div className="p-4 rounded-2xl bg-cream-100 border border-champagne-500/20 text-xs text-charcoal-700 flex items-start space-x-3">
               <Info className="w-4 h-4 text-champagne-600 mt-0.5 flex-shrink-0" />
               <p className="leading-relaxed">
-                <strong>Diagnostic Evaluation:</strong> {engine.keyFinding}
+                <strong>ASPIRE Multi-Modal Synthesis:</strong> {engine.keyFinding}
               </p>
             </div>
           </div>
@@ -376,3 +376,4 @@ export const TopicWindow = ({
     </div>
   );
 };
+

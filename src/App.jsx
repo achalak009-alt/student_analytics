@@ -99,17 +99,19 @@ export function App() {
 
       </main>
 
-      {/* Persistent Luxury Footer */}
-      <footer className="mt-auto border-t border-champagne-500/20 bg-cream-50 py-6 text-center text-xs text-charcoal-500">
+      {/* Persistent Corporate Luxury EdTech Footer */}
+      <footer className="mt-auto border-t border-champagne-500/25 bg-cream-50 py-6 text-center text-xs text-charcoal-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center space-x-2">
-            <span className="font-serif font-bold text-burgundy-900">AURA Learning Analytics</span>
-            <span className="text-champagne-500">·</span>
-            <span>Institutional Luxury Intelligence</span>
+          <div className="flex flex-col sm:flex-row items-center sm:space-x-2 text-center sm:text-left">
+            <span className="font-serif font-extrabold text-burgundy-900 tracking-wide text-sm">ASPIRE</span>
+            <span className="text-champagne-500 hidden sm:inline">·</span>
+            <span className="text-charcoal-600 font-medium text-[11px]">
+              Automated Student Performance Identification for Risk and Engagement (Multi-Modal Learning Approach)
+            </span>
           </div>
           <div className="flex items-center space-x-4 text-[11px]">
-            <span>Active Dataset: <strong>student_data.csv (500 records)</strong></span>
-            <span>Current Role: <strong className="text-burgundy-800">{user.role} View</strong></span>
+            <span>Dataset: <strong>student_data.csv (500 records)</strong></span>
+            <span>Role: <strong className="text-burgundy-800">{user.role} View</strong></span>
           </div>
         </div>
       </footer>
@@ -135,3 +137,4 @@ export function App() {
 }
 
 export default App;
+

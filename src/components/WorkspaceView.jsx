@@ -26,40 +26,68 @@ export const WorkspaceView = ({ onSelectEngine, user }) => {
   return (
     <div className="space-y-10 animate-fade-in pb-16">
       
-      {/* Luxury Hero Banner */}
+      {/* Corporate Luxury EdTech Hero Banner */}
       <section className="relative overflow-hidden rounded-3xl bg-burgundy-900 border border-champagne-500/30 p-8 sm:p-12 text-cream-100 shadow-luxury">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-champagne-500/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-20 w-60 h-60 rounded-full bg-burgundy-700/40 blur-2xl pointer-events-none" />
         
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-champagne-500/15 border border-champagne-500/40 text-champagne-300 text-xs font-semibold tracking-wider uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
-            <span>Macro Analytical Intelligence · 500 Records</span>
+        <div className="relative z-10 max-w-4xl space-y-5">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-champagne-500/15 border border-champagne-500/40 text-champagne-300 text-xs font-semibold tracking-wider uppercase">
+            <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
+            <span>Enterprise EdTech Architecture · Multi-Modal Learning Approach</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-cream-100 leading-tight">
-            Institutional Clarity. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-champagne-300 via-champagne-400 to-amber-200">
-              Personalized Trajectories.
-            </span>
-          </h1>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-3">
+              <h1 className="text-4xl sm:text-6xl font-serif font-extrabold tracking-wider text-cream-100">
+                ASPIRE
+              </h1>
+              <span className="text-xs uppercase font-mono font-bold tracking-widest text-champagne-400 bg-burgundy-950/80 px-3 py-1 rounded-full border border-champagne-500/40">
+                v2.4 Production Core
+              </span>
+            </div>
+            
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-champagne-300 via-champagne-400 to-amber-200 leading-snug">
+              Automated Student Performance Identification for Risk and Engagement
+            </h2>
+          </div>
 
-          <p className="text-cream-200 text-sm sm:text-base leading-relaxed font-light max-w-2xl">
-            Welcome, <strong className="text-champagne-300 font-semibold">{user.name}</strong>. Sector 2 provides complete institutional oversight synthesized from 500 learners across five academic disciplines. Dive into specialized exploration engines to uncover granular micro-indicators.
+          <p className="text-cream-200 text-sm sm:text-base leading-relaxed font-light max-w-3xl">
+            A corporate educational technology intelligence platform pioneering a <strong>Multi-Modal Learning Approach</strong>. ASPIRE synthesizes continuous temporal LMS access logs, asynchronous video absorption, formative grading trajectories, and discursive peer interaction metrics into unified, actionable predictive retention models for institutional leaders and learners.
           </p>
 
-          <div className="pt-2 flex flex-wrap gap-4 items-center">
+          {/* Multi-Modal Ingestion Pipeline Chips (Corporate EdTech Design) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div className="bg-burgundy-950/70 border border-champagne-500/20 p-2.5 rounded-xl text-left">
+              <span className="text-[10px] uppercase font-bold text-champagne-400/90 block">Modality I · Discourse</span>
+              <span className="text-xs font-semibold text-cream-100">Forum Interaction & Peer Dialogue</span>
+            </div>
+            <div className="bg-burgundy-950/70 border border-champagne-500/20 p-2.5 rounded-xl text-left">
+              <span className="text-[10px] uppercase font-bold text-champagne-400/90 block">Modality II · Behavioral</span>
+              <span className="text-xs font-semibold text-cream-100">Video Watch & Submission Depth</span>
+            </div>
+            <div className="bg-burgundy-950/70 border border-champagne-500/20 p-2.5 rounded-xl text-left">
+              <span className="text-[10px] uppercase font-bold text-champagne-400/90 block">Modality III · Predictive</span>
+              <span className="text-xs font-semibold text-cream-100">Multi-Tier Dropout Risk Vector</span>
+            </div>
+            <div className="bg-burgundy-950/70 border border-champagne-500/20 p-2.5 rounded-xl text-left">
+              <span className="text-[10px] uppercase font-bold text-champagne-400/90 block">Modality IV · Temporal</span>
+              <span className="text-xs font-semibold text-cream-100">Autonomous MOOC Pacing & Logins</span>
+            </div>
+          </div>
+
+          <div className="pt-3 flex flex-wrap gap-4 items-center">
             <button
               onClick={() => onSelectEngine('forum')}
-              className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-champagne-500 hover:bg-champagne-400 text-burgundy-950 font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-gold-glow hover:scale-105"
+              className="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl gold-gradient-bg text-burgundy-950 font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-gold-glow hover:scale-105 active:scale-95 border border-champagne-300"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Explore Analytical Engines</span>
+              <Sparkles className="w-4 h-4 text-burgundy-950" />
+              <span>Launch Multi-Modal Engines</span>
             </button>
 
-            <div className="text-xs text-cream-300/80 font-mono flex items-center space-x-2 bg-burgundy-950/60 px-4 py-2.5 rounded-xl border border-champagne-500/20">
+            <div className="text-xs text-cream-300 font-mono flex items-center space-x-2 bg-burgundy-950/80 px-4 py-3 rounded-xl border border-champagne-500/30">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Live Dataset: student_data.csv verified</span>
+              <span>Dataset Synchronized: 500 Active Cohort Records (student_data.csv)</span>
             </div>
           </div>
         </div>
@@ -299,3 +327,4 @@ export const WorkspaceView = ({ onSelectEngine, user }) => {
     </div>
   );
 };
+

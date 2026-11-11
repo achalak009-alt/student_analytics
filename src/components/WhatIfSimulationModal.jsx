@@ -104,14 +104,14 @@ export const WhatIfSimulationModal = ({
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="font-serif font-bold text-lg sm:text-xl text-cream-100">
-                  "What If" Predictive Simulation
+                  ASPIRE "What If" Multi-Modal Simulation
                 </h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-champagne-500 text-burgundy-950 uppercase">
                   Engine {engine?.number || "01"}
                 </span>
               </div>
               <p className="text-xs text-cream-300 font-light">
-                Simulate behavioral adjustments for <strong>{user.name}</strong> to project grade and retention deltas
+                Multi-Modal Predictive Simulation across Behavioral, Assessment, and Temporal Vectors for <strong>{user.name}</strong>
               </p>
             </div>
           </div>
@@ -471,7 +471,7 @@ export const WhatIfSimulationModal = ({
           </button>
 
           <span className="text-[11px] text-charcoal-500 font-mono hidden sm:inline">
-            AURA Simulation Model v2.4 · Real-time Inference
+            ASPIRE Multi-Modal Inference Model v2.4 · Real-time Simulation
           </span>
         </div>
 
@@ -480,3 +480,4 @@ export const WhatIfSimulationModal = ({
     </div>
   );
 };
+

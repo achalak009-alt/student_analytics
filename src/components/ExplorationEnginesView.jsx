@@ -33,21 +33,21 @@ export const ExplorationEnginesView = ({ onSelectEngine, user }) => {
         <div className="max-w-3xl space-y-3 relative z-10">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-burgundy-900 text-champagne-300 text-xs font-semibold tracking-wider uppercase">
             <Sparkles className="w-3.5 h-3.5 text-champagne-400" />
-            <span>Sector 3 · Specialized Intelligence</span>
+            <span>Sector 3 · ASPIRE Multi-Modal Exploration Engines</span>
           </div>
           
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-burgundy-900 leading-tight">
-            The Exploration Engines
+            Multi-Modal Analytical Engines
           </h1>
           
           <p className="text-sm text-charcoal-700 font-normal leading-relaxed max-w-2xl">
-            Four targeted analytical apparatuses engineered to dissect discursive velocity, cognitive focus depth, attrition probability, and asynchronous pacing rhythms. Click any engine to enter its dedicated analytical window and launch the predictive "What If" simulation.
+            Four specialized diagnostic modalities calibrated under the <strong>ASPIRE Multi-Modal Learning Approach</strong>. Each module ingests distinct behavioral and academic signals to detect subtle early markers of disengagement and academic vulnerability.
           </p>
 
           <div className="pt-2 flex items-center space-x-4 text-xs text-charcoal-600 font-medium">
             <span className="flex items-center space-x-1.5">
               <span className="w-2 h-2 rounded-full bg-champagne-500" />
-              <span>Current User: <strong>{user.name}</strong></span>
+              <span>Active Target: <strong>{user.name}</strong></span>
             </span>
             <span className="text-champagne-500/40">|</span>
             <span>Role: <strong className="text-burgundy-800">{user.role}</strong> ({user.role === 'Admin' ? 'Editable Dataset Fields' : 'View-Only'})</span>
@@ -132,3 +132,4 @@ export const ExplorationEnginesView = ({ onSelectEngine, user }) => {
     </div>
   );
 };
+
