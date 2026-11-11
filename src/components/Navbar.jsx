@@ -22,11 +22,6 @@ export const Navbar = ({
   onOpenProfileModal,
   onOpenCollegeHonors
 }) => {
-  const toggleRole = () => {
-    const newRole = user.role === 'Student' ? 'Admin' : 'Student';
-    setUser(prev => ({ ...prev, role: newRole }));
-  };
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-burgundy-800 text-cream-100 border-b border-champagne-500/30 shadow-luxury backdrop-blur-md transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,32 +130,22 @@ export const Navbar = ({
               <span>Campus Honors</span>
             </button>
 
-            {/* Role Switcher Pill */}
-            <div className="flex items-center bg-burgundy-900/90 p-1 rounded-xl border border-champagne-500/30">
-              <span className="text-[10px] uppercase font-semibold text-cream-300 px-2 hidden sm:inline">
-                Role:
-              </span>
-              <button
-                onClick={toggleRole}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
-                  user.role === 'Admin'
-                    ? 'bg-champagne-500 text-burgundy-950 shadow-sm'
-                    : 'bg-burgundy-800 text-cream-200 border border-champagne-500/20'
-                }`}
-                title="Toggle between View-Only (Student) and Editable Dataset (Admin)"
-              >
-                {user.role === 'Admin' ? (
-                  <>
-                    <SlidersHorizontal className="w-3.5 h-3.5 text-burgundy-950" />
-                    <span>Admin Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <GraduationCap className="w-3.5 h-3.5 text-champagne-400" />
-                    <span>Student View</span>
-                  </>
-                )}
-              </button>
+            {/* Verified Fixed Role Badge (Switching Disabled) */}
+            <div 
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-burgundy-900/90 border border-champagne-500/30 text-cream-100 shadow-sm cursor-default"
+              title={`Authenticated Identity: ${user.role} (Role switching is strictly disabled)`}
+            >
+              {user.role === 'Admin' ? (
+                <>
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-champagne-400" />
+                  <span className="text-xs font-bold text-champagne-300">Admin Mode</span>
+                </>
+              ) : (
+                <>
+                  <GraduationCap className="w-3.5 h-3.5 text-champagne-400" />
+                  <span className="text-xs font-bold text-cream-200">Student View</span>
+                </>
+              )}
             </div>
 
             {/* Account Quick Trigger */}

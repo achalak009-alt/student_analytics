@@ -22,11 +22,6 @@ export const ProfileModal = ({
 }) => {
   if (!isOpen) return null;
 
-  const toggleRole = () => {
-    const newRole = user.role === 'Student' ? 'Admin' : 'Student';
-    setUser(prev => ({ ...prev, role: newRole }));
-  };
-
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-burgundy-950/70 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in">
       <div 
@@ -73,15 +68,11 @@ export const ProfileModal = ({
                   {user.name}
                 </h4>
                 
-                {/* Active Role Badge with Interactive Switch */}
-                <button
-                  onClick={toggleRole}
-                  className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all bg-burgundy-100 text-burgundy-900 hover:bg-champagne-200 border border-champagne-500/30"
-                  title="Click to toggle between Student (View-Only) and Admin (Editable)"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-champagne-700" />
-                  <span>Role: {user.role} (Switch)</span>
-                </button>
+                {/* Fixed Non-Switchable Role Badge */}
+                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-burgundy-100 text-burgundy-900 border border-champagne-500/30">
+                  <ShieldCheck className="w-3.5 h-3.5 text-burgundy-800" />
+                  <span>Role: {user.role} (Verified)</span>
+                </span>
               </div>
 
               <p className="text-xs text-charcoal-600 font-medium">{user.degree}</p>

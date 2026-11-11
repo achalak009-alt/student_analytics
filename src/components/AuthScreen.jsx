@@ -75,10 +75,10 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
   }, [accounts]);
 
   // ----------------------------------------------------
-  // Login Form State
+  // Login Form State (Starts Empty: Registration Enforced)
   // ----------------------------------------------------
-  const [loginIdentifier, setLoginIdentifier] = useState('STU-8821');
-  const [loginPassword, setLoginPassword] = useState('password123');
+  const [loginIdentifier, setLoginIdentifier] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginRole, setLoginRole] = useState('Student');
 
   // ----------------------------------------------------
@@ -297,7 +297,16 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
       if (!found) {
         setFeedback({
           type: 'error',
-          text: 'Account not found. Please verify your Enrollment ID or Email, or click "Create Account".'
+          text: 'Access Denied: Unregistered credentials. You must be registered in the ASPIRE directory to log in. Please click "Create Account" below to register.'
+        });
+        return;
+      }
+
+      // Role Mismatch Check: Student cannot log in as Admin, and Admin cannot log in as Student
+      if (found.role && found.role !== loginRole) {
+        setFeedback({
+          type: 'error',
+          text: `Access Denied: This account is officially registered as a ${found.role}. You cannot sign in under the ${loginRole} persona.`
         });
         return;
       }
@@ -305,19 +314,19 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
       if (found.password !== loginPassword) {
         setFeedback({
           type: 'error',
-          text: 'Incorrect password. Please try again or use "Forgot Password".'
+          text: 'Access Denied: Incorrect password. Please try again or use "Forgot Password".'
         });
         return;
       }
 
-      // Successful login
+      // Successful login with strictly locked role from registered account
       onLogin({
         ...initialUser,
         id: found.enrollmentNo,
         name: found.name,
         email: found.email,
         degree: `${found.branch} in ${found.course}`,
-        role: loginRole || found.role || 'Student',
+        role: found.role || 'Student',
         standing: found.role === 'Admin' ? 'Administrative Faculty' : 'Registered Scholar',
         cohort: `${found.collegeName} · Class of 2026`,
         avatarInitials: found.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
@@ -502,35 +511,10 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
               </div>
             </div>
 
-            {/* One-Click Quick Campus Logins */}
-            <div className="pt-3 border-t border-champagne-500/15 text-center">
-              <span className="text-[10px] uppercase font-bold text-charcoal-500 tracking-wider block mb-2">
-                Instant Demo Campus Credentials
-              </span>
-              <div className="flex gap-2 justify-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginIdentifier('STU-8821');
-                    setLoginPassword('password123');
-                    setLoginRole('Student');
-                  }}
-                  className="text-[11px] px-3 py-1.5 rounded-lg bg-cream-200 hover:bg-cream-300 text-burgundy-900 font-semibold transition-colors"
-                >
-                  Aiman Vance (Student)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginIdentifier('ADM-0042');
-                    setLoginPassword('adminpassword');
-                    setLoginRole('Admin');
-                  }}
-                  className="text-[11px] px-3 py-1.5 rounded-lg bg-cream-200 hover:bg-cream-300 text-burgundy-900 font-semibold transition-colors"
-                >
-                  Dean Sterling (Admin)
-                </button>
-              </div>
+            {/* Institutional Security Notice */}
+            <div className="pt-3 border-t border-champagne-500/15 flex items-center justify-center space-x-2 text-[11px] text-charcoal-500">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Strict Authentication: Only registered academic accounts are authorized.</span>
             </div>
 
           </form>

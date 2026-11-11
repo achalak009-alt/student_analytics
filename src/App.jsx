@@ -11,10 +11,10 @@ import { AuthScreen } from './components/AuthScreen';
 import { INITIAL_USER, ENGINES_DATA } from './data/mockData';
 
 export function App() {
-  // Authentication State (Direct Home Page Entry: starts as authenticated)
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // Authentication State: Portal opens directly with the login page
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Navigation State (Direct Home Page Entry: starts immediately on 'workspace')
+  // Navigation State (starts on 'workspace' once authenticated)
   const [activeSector, setActiveSector] = useState('workspace'); // 'workspace' | 'engines' | 'status' | 'profile'
   
   // Exploration Engine State
