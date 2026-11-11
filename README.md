@@ -401,6 +401,10 @@ ASPIRE aims to support educational institutions by:
 ---
 
 ## 👩‍💻 Contributors
+AKHILA VISHWANATH
+AIMAN SHAIK
+JAMALAPUR NEETHU
+ACHALA KOMMIREDDY
 
 Developed as an academic project focused on student learning analytics and educational data mining.
 
