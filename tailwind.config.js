@@ -70,6 +70,22 @@ export default {
         shimmer: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-8px) rotate(2deg)' },
+        },
+        floatReverse: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(8px) rotate(-2deg)' },
+        },
+        celebrateBounce: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.05)' },
         }
       },
       animation: {
@@ -77,6 +93,10 @@ export default {
         'fade-up': 'fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'scale-up': 'scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'shimmer': 'shimmer 2.5s infinite',
+        'float': 'float 4s ease-in-out infinite',
+        'float-reverse': 'floatReverse 4.5s ease-in-out infinite',
+        'celebrate': 'celebrateBounce 2s ease-in-out infinite',
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
       }
     },
   },

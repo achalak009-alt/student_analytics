@@ -12,11 +12,14 @@ import {
   ChevronRight,
   TrendingUp,
   BarChart3,
-  Compass
+  Compass,
+  Award,
+  Trophy,
+  Star
 } from 'lucide-react';
 import { GLOBAL_WORKSPACE_DATA, ENGINES_DATA } from '../data/mockData';
 
-export const WorkspaceView = ({ onSelectEngine, user }) => {
+export const WorkspaceView = ({ onSelectEngine, user, onOpenCollegeHonors }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredCategories = selectedCategory === "All"
@@ -31,6 +34,30 @@ export const WorkspaceView = ({ onSelectEngine, user }) => {
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-champagne-500/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-20 w-60 h-60 rounded-full bg-burgundy-700/40 blur-2xl pointer-events-none" />
         
+        {/* Floating College Honors Pop-up Graphic Badge */}
+        <div 
+          onClick={onOpenCollegeHonors}
+          className="hidden lg:flex absolute top-10 right-10 z-20 cursor-pointer group bg-burgundy-950/85 hover:bg-burgundy-950 p-4 rounded-2xl border border-champagne-500/40 shadow-gold-glow backdrop-blur-md items-center space-x-3.5 transition-all duration-300 hover:scale-105 active:scale-95 animate-float"
+        >
+          <div className="w-12 h-12 rounded-xl gold-gradient-bg p-0.5 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-full h-full bg-burgundy-900 rounded-[10px] flex items-center justify-center text-champagne-400">
+              <GraduationCap className="w-6 h-6 transform -rotate-12 group-hover:rotate-0 transition-transform duration-300" />
+            </div>
+          </div>
+          <div className="text-left">
+            <div className="flex items-center space-x-1.5">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-champagne-400">Campus Honors</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
+            <strong className="block text-xs font-serif text-cream-100 font-bold leading-tight">
+              Presidential Citation
+            </strong>
+            <span className="block text-[10px] text-cream-300/80 underline decoration-champagne-500/60 group-hover:text-champagne-300 transition-colors">
+              Click for college honors pop-up ✦
+            </span>
+          </div>
+        </div>
+
         <div className="relative z-10 max-w-4xl space-y-5">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-champagne-500/15 border border-champagne-500/40 text-champagne-300 text-xs font-semibold tracking-wider uppercase">
             <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
@@ -89,6 +116,42 @@ export const WorkspaceView = ({ onSelectEngine, user }) => {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Dataset Synchronized: 500 Active Cohort Records (student_data.csv)</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* College Milestone & Academic Honors Interactive Graphic Banner */}
+      <section 
+        onClick={onOpenCollegeHonors}
+        className="cursor-pointer group bg-gradient-to-r from-cream-50 via-champagne-50/70 to-cream-50 rounded-2xl p-4 sm:p-5 border border-champagne-500/30 shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 rounded-2xl bg-burgundy-900 text-champagne-400 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform animate-float">
+            <Award className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs sm:text-sm font-serif font-bold text-burgundy-900">
+                Collegiate Milestone Checkpoint · Semester 5
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-champagne-200 text-burgundy-950 uppercase">
+                Active Scholar
+              </span>
+            </div>
+            <p className="text-xs text-charcoal-600 mt-0.5">
+              Current GPA: <strong className="text-burgundy-900 font-mono">3.88</strong> · Attendance: <strong className="text-emerald-700 font-mono">91.5%</strong> · Discursive Forum Velocity: <strong className="text-champagne-700 font-mono">34 interactions</strong>
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
+          <div className="text-right hidden sm:block">
+            <span className="text-[10px] text-charcoal-500 uppercase tracking-wider block font-semibold">Cohort Standing</span>
+            <span className="text-xs font-bold text-burgundy-900">Top 4% Academic Cohort</span>
+          </div>
+          <div className="px-4 py-2 rounded-xl gold-gradient-bg text-burgundy-950 font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 shadow-sm group-hover:scale-105 transition-transform">
+            <Sparkles className="w-3.5 h-3.5 text-burgundy-950" />
+            <span>View Honors Graphic</span>
           </div>
         </div>
       </section>

@@ -6,9 +6,14 @@ import { TopicWindow } from './components/TopicWindow';
 import { WhatIfSimulationModal } from './components/WhatIfSimulationModal';
 import { PlatformStatusView } from './components/PlatformStatusView';
 import { ProfileModal } from './components/ProfileModal';
+import { CollegeHonorsModal } from './components/CollegeHonorsModal';
+import { AuthScreen } from './components/AuthScreen';
 import { INITIAL_USER, ENGINES_DATA } from './data/mockData';
 
 export function App() {
+  // Authentication State (Direct Home Page Entry: starts as authenticated)
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
   // Navigation State (Direct Home Page Entry: starts immediately on 'workspace')
   const [activeSector, setActiveSector] = useState('workspace'); // 'workspace' | 'engines' | 'status' | 'profile'
   
@@ -21,6 +26,7 @@ export function App() {
   // Modals State
   const [isWhatIfOpen, setIsWhatIfOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isCollegeHonorsOpen, setIsCollegeHonorsOpen] = useState(false);
 
   // Handler for updating student metrics (Admin Mode)
   const handleUpdateUserMetrics = (updatedMetrics) => {
@@ -33,6 +39,15 @@ export function App() {
     }));
   };
 
+  // Handler for logging in from AuthScreen
+  const handleLogin = (role) => {
+    setUser(prev => ({
+      ...prev,
+      role: role || 'Student'
+    }));
+    setIsAuthenticated(true);
+  };
+
   // Find active engine if one is selected
   const activeEngine = ENGINES_DATA.find(e => e.id === activeEngineId);
 
@@ -43,10 +58,15 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // If user explicitly logged out, render the Luxury Campus Auth Screen
+  if (!isAuthenticated) {
+    return <AuthScreen onLogin={handleLogin} initialUser={user} />;
+  }
+
   return (
     <div className="min-h-screen bg-cream-100 text-charcoal-800 flex flex-col selection:bg-champagne-500 selection:text-burgundy-950">
       
-      {/* Persistent Navigation Bar (4 Sectors: Profile, Workspace, Exploration Engines, Platform Status) */}
+      {/* Persistent Fixed Navigation Bar (4 Sectors: Profile, Workspace, Exploration Engines, Platform Status) */}
       <Navbar
         activeSector={activeSector}
         setActiveSector={(sector) => {
@@ -60,10 +80,11 @@ export function App() {
         activeEngineId={activeEngineId}
         setActiveEngineId={setActiveEngineId}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
+        onOpenCollegeHonors={() => setIsCollegeHonorsOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      {/* Main Content Area with Fixed Task Bar Offset */}
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 ${activeEngineId ? 'pt-32 sm:pt-36' : 'pt-24 sm:pt-28'}`}>
         
         {/* Render Dedicated Topic Window if an Engine is active */}
         {activeEngine ? (
@@ -81,6 +102,7 @@ export function App() {
               <WorkspaceView 
                 onSelectEngine={handleSelectEngine} 
                 user={user} 
+                onOpenCollegeHonors={() => setIsCollegeHonorsOpen(true)}
               />
             )}
 
@@ -124,12 +146,20 @@ export function App() {
         engine={activeEngine || ENGINES_DATA[0]}
       />
 
-      {/* Profile Sector Dossier Modal */}
+      {/* Profile Sector Dossier Modal with Log Out */}
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         user={user}
         setUser={setUser}
+        onLogout={() => setIsAuthenticated(false)}
+      />
+
+      {/* College Academic Honors Pop-Up Graphic Modal */}
+      <CollegeHonorsModal
+        isOpen={isCollegeHonorsOpen}
+        onClose={() => setIsCollegeHonorsOpen(false)}
+        user={user}
       />
 
     </div>

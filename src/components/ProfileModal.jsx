@@ -9,14 +9,16 @@ import {
   Calendar, 
   ShieldCheck, 
   SlidersHorizontal,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from 'lucide-react';
 
 export const ProfileModal = ({ 
   isOpen, 
   onClose, 
   user, 
-  setUser 
+  setUser,
+  onLogout
 }) => {
   if (!isOpen) return null;
 
@@ -127,13 +129,25 @@ export const ProfileModal = ({
 
         </div>
 
-        {/* Footer */}
-        <div className="bg-cream-50 px-6 sm:px-8 py-4 border-t border-champagne-500/20 flex justify-end">
+        {/* Footer with Log Out and Dismiss */}
+        <div className="bg-cream-50 px-6 sm:px-8 py-4 border-t border-champagne-500/20 flex items-center justify-between">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-burgundy-900 hover:bg-burgundy-800 text-cream-100 text-xs font-bold transition-colors"
+            className="px-4 py-2 rounded-xl bg-cream-200 hover:bg-cream-300 text-charcoal-700 text-xs font-semibold transition-colors"
           >
-            Close Dossier
+            Close Window
+          </button>
+
+          <button
+            onClick={() => {
+              onClose();
+              if (onLogout) onLogout();
+            }}
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-burgundy-900 hover:bg-rose-950 text-cream-100 hover:text-champagne-300 text-xs font-bold transition-all shadow-md border border-champagne-500/40 hover:scale-105 active:scale-95"
+            title="Log out of active institutional session"
+          >
+            <LogOut className="w-4 h-4 text-champagne-400" />
+            <span>Log Out</span>
           </button>
         </div>
 

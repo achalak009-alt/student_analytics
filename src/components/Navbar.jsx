@@ -8,7 +8,8 @@ import {
   ChevronRight,
   Shield,
   GraduationCap,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Award
 } from 'lucide-react';
 
 export const Navbar = ({ 
@@ -18,7 +19,8 @@ export const Navbar = ({
   setUser, 
   activeEngineId, 
   setActiveEngineId,
-  onOpenProfileModal
+  onOpenProfileModal,
+  onOpenCollegeHonors
 }) => {
   const toggleRole = () => {
     const newRole = user.role === 'Student' ? 'Admin' : 'Student';
@@ -26,7 +28,7 @@ export const Navbar = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-burgundy-800 text-cream-100 border-b border-champagne-500/30 shadow-luxury transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-burgundy-800 text-cream-100 border-b border-champagne-500/30 shadow-luxury backdrop-blur-md transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -121,8 +123,18 @@ export const Navbar = ({
           </nav>
 
           {/* Role Control Switcher & Fast Actions */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
             
+            {/* College Honors & Milestones Pop-up Trigger */}
+            <button
+              onClick={onOpenCollegeHonors}
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-champagne-500/15 hover:bg-champagne-500/25 text-champagne-300 border border-champagne-500/30 text-xs font-semibold transition-all hover:scale-105 active:scale-95 group"
+              title="Open Collegiate Honors & Milestone Pop-up"
+            >
+              <Award className="w-3.5 h-3.5 text-champagne-400 group-hover:scale-110 transition-transform animate-float" />
+              <span>Campus Honors</span>
+            </button>
+
             {/* Role Switcher Pill */}
             <div className="flex items-center bg-burgundy-900/90 p-1 rounded-xl border border-champagne-500/30">
               <span className="text-[10px] uppercase font-semibold text-cream-300 px-2 hidden sm:inline">
