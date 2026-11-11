@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FDFBF7;
+    color: #2C2C2C;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  
+  h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F3EB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DFC67A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+/* Metallic Champagne Shimmer */
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #E6C86E 0%, #D4AF37 50%, #B89326 100%);
+}
+
+.burgundy-gradient-bg {
+  background: linear-gradient(145deg, #6F1E2E 0%, #581825 60%, #3B0E17 100%);
+}
+
+.cream-card {
+  background: #FDFCF9;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
