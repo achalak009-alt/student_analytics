@@ -40,11 +40,15 @@ export function App() {
   };
 
   // Handler for logging in from AuthScreen
-  const handleLogin = (role) => {
-    setUser(prev => ({
-      ...prev,
-      role: role || 'Student'
-    }));
+  const handleLogin = (userOrRole) => {
+    if (typeof userOrRole === 'object' && userOrRole !== null) {
+      setUser(userOrRole);
+    } else {
+      setUser(prev => ({
+        ...prev,
+        role: userOrRole || 'Student'
+      }));
+    }
     setIsAuthenticated(true);
   };
 

@@ -155,3 +155,4 @@ export const CollegeHonorsModal = ({ isOpen, onClose, user }) => {
     </div>
   );
 };
+
