@@ -16,7 +16,7 @@ export function App() {
 
   // Navigation State (starts on 'workspace' once authenticated)
   const [activeSector, setActiveSector] = useState('workspace'); // 'workspace' | 'engines' | 'status' | 'profile'
-  
+
   // Exploration Engine State
   const [activeEngineId, setActiveEngineId] = useState(null); // 'forum' | 'engagement' | 'risk' | 'mooc' | null
 
@@ -69,7 +69,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-cream-100 text-charcoal-800 flex flex-col selection:bg-champagne-500 selection:text-burgundy-950">
-      
+
       {/* Persistent Fixed Navigation Bar (4 Sectors: Profile, Workspace, Exploration Engines, Platform Status) */}
       <Navbar
         activeSector={activeSector}
@@ -89,7 +89,7 @@ export function App() {
 
       {/* Main Content Area with Fixed Task Bar Offset */}
       <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 ${activeEngineId ? 'pt-32 sm:pt-36' : 'pt-24 sm:pt-28'}`}>
-        
+
         {/* Render Dedicated Topic Window if an Engine is active */}
         {activeEngine ? (
           <TopicWindow
@@ -103,17 +103,17 @@ export function App() {
           /* Sector Switcher */
           <>
             {activeSector === 'workspace' && (
-              <WorkspaceView 
-                onSelectEngine={handleSelectEngine} 
-                user={user} 
+              <WorkspaceView
+                onSelectEngine={handleSelectEngine}
+                user={user}
                 onOpenCollegeHonors={() => setIsCollegeHonorsOpen(true)}
               />
             )}
 
             {activeSector === 'engines' && (
-              <ExplorationEnginesView 
-                onSelectEngine={handleSelectEngine} 
-                user={user} 
+              <ExplorationEnginesView
+                onSelectEngine={handleSelectEngine}
+                user={user}
               />
             )}
 
