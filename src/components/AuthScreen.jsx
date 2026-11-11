@@ -87,11 +87,12 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
   // Step 2: Security Credentials
   // ----------------------------------------------------
   const [regData, setRegData] = useState({
+    role: 'Student', // 'Student' | 'Admin'
     name: '',
     collegeName: '',
-    enrollmentNo: '',
-    branch: 'B.Tech',
-    course: '',
+    enrollmentNo: '', // Serves as Enrollment No for Student, Admin Code for Admin
+    branch: 'B.Tech', // Branch for Student, Department for Admin
+    course: '', // Course for Student, Official Designation for Admin
     email: '',
     password: '',
     confirmPassword: ''
@@ -100,6 +101,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
   // ----------------------------------------------------
   // Forgot Password State
   // ----------------------------------------------------
+  const [forgotRole, setForgotRole] = useState('Student');
   const [forgotIdentifier, setForgotIdentifier] = useState('');
   const [forgotCollege, setForgotCollege] = useState('');
   const [verifiedAccount, setVerifiedAccount] = useState(null);
@@ -120,16 +122,18 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
   const handleRegisterStep1Submit = (e) => {
     e.preventDefault();
     if (!regData.name.trim() || !regData.collegeName.trim() || !regData.enrollmentNo.trim() || !regData.course.trim()) {
-      setFeedback({ type: 'error', text: 'Please complete all academic dossier fields.' });
+      const missingField = regData.role === 'Admin' ? 'Admin Code and Departmental Designation' : 'Enrollment Number and Course';
+      setFeedback({ type: 'error', text: `Please complete all fields including ${missingField}.` });
       return;
     }
 
-    // Check if enrollment number is already registered
+    // Check if enrollment number or admin code is already registered
     const exists = accounts.find(a => 
       a.enrollmentNo.toLowerCase() === regData.enrollmentNo.trim().toLowerCase()
     );
     if (exists) {
-      setFeedback({ type: 'error', text: `Enrollment number "${regData.enrollmentNo}" is already registered. Please sign in or use another enrollment number.` });
+      const codeType = regData.role === 'Admin' ? 'Admin Code' : 'Enrollment number';
+      setFeedback({ type: 'error', text: `${codeType} "${regData.enrollmentNo}" is already registered. Please sign in or use another code.` });
       return;
     }
 
@@ -140,7 +144,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
   const handleRegisterStep2Submit = (e) => {
     e.preventDefault();
     if (!regData.email.trim() || !regData.password) {
-      setFeedback({ type: 'error', text: 'Please provide both your email ID and a secure password.' });
+      setFeedback({ type: 'error', text: 'Please provide both your institutional email ID and password.' });
       return;
     }
 
@@ -173,7 +177,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
         course: regData.course.trim(),
         email: regData.email.trim(),
         password: regData.password,
-        role: 'Student'
+        role: regData.role || 'Student'
       };
 
       setAccounts(prev => [...prev, newAccount]);
@@ -182,15 +186,17 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
       // Pre-populate login fields for convenience
       setLoginIdentifier(newAccount.enrollmentNo);
       setLoginPassword(newAccount.password);
-      setLoginRole('Student');
+      setLoginRole(newAccount.role);
 
+      const idType = newAccount.role === 'Admin' ? 'Admin Code' : 'Enrollment No';
       setFeedback({
         type: 'success',
-        text: `Account for ${newAccount.name} created successfully! Please sign in with your credentials.`
+        text: `Account for ${newAccount.name} (${idType}: ${newAccount.enrollmentNo}) created successfully! Please sign in with your credentials.`
       });
 
       // Reset registration form
       setRegData({
+        role: 'Student',
         name: '',
         collegeName: '',
         enrollmentNo: '',
@@ -221,20 +227,23 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
       const match = accounts.find(a => 
         (a.enrollmentNo.toLowerCase() === forgotIdentifier.trim().toLowerCase() ||
          a.email.toLowerCase() === forgotIdentifier.trim().toLowerCase()) &&
-        a.collegeName.toLowerCase().includes(forgotCollege.trim().toLowerCase())
+        a.collegeName.toLowerCase().includes(forgotCollege.trim().toLowerCase()) &&
+        (a.role || 'Student') === forgotRole
       );
 
       if (match) {
         setVerifiedAccount(match);
+        const idLabel = match.role === 'Admin' ? 'Admin Code' : 'Enrollment No';
         setFeedback({
           type: 'success',
-          text: `Verified student: ${match.name} (${match.enrollmentNo}). Please set your new password.`
+          text: `Verified ${match.role}: ${match.name} (${idLabel}: ${match.enrollmentNo}). Please set your new password.`
         });
         setMode('forgot-reset');
       } else {
+        const idLabel = forgotRole === 'Admin' ? 'Admin Code' : 'Enrollment No';
         setFeedback({
           type: 'error',
-          text: 'No matching student record found with these details. Verify your Enrollment No / Email and College Name.'
+          text: `No matching ${forgotRole.toLowerCase()} record found with this ${idLabel} / Email and College Name.`
         });
       }
     }, 500);
@@ -417,7 +426,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
               <div className="grid grid-cols-2 gap-3 p-1 rounded-2xl bg-cream-200/80 border border-champagne-500/20">
                 <button
                   type="button"
-                  onClick={() => { setLoginRole('Student'); setLoginIdentifier('STU-8821'); }}
+                  onClick={() => { setLoginRole('Student'); setLoginIdentifier(''); }}
                   className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
                     loginRole === 'Student'
                       ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
@@ -430,7 +439,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
 
                 <button
                   type="button"
-                  onClick={() => { setLoginRole('Admin'); setLoginIdentifier('ADM-0042'); }}
+                  onClick={() => { setLoginRole('Admin'); setLoginIdentifier(''); }}
                   className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
                     loginRole === 'Admin'
                       ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
@@ -443,10 +452,10 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
               </div>
             </div>
 
-            {/* Enrollment ID or Email */}
+            {/* Enrollment ID or Admin Code / Email */}
             <div className="space-y-1">
               <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                Enrollment Number or Institutional Email
+                {loginRole === 'Admin' ? 'Admin Code or Faculty Email' : 'Enrollment Number or Institutional Email'}
               </label>
               <div className="relative">
                 <UserCheck className="w-4 h-4 text-champagne-700 absolute left-3.5 top-3 pointer-events-none" />
@@ -455,7 +464,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 font-mono text-xs font-semibold focus:outline-none focus:border-champagne-500 focus:ring-1 focus:ring-champagne-500"
-                  placeholder="e.g. STU-8821 or student@analytics.edu"
+                  placeholder={loginRole === 'Admin' ? "e.g. ADM-0042 or dean@aspire.edu" : "e.g. STU-8821 or student@analytics.edu"}
                   required
                 />
               </div>
@@ -521,7 +530,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
         )}
 
         {/* ========================================================================= */}
-        {/* MODE 2: CREATE ACCOUNT (STEP 1: ACADEMIC DOSSIER) */}
+        {/* MODE 2: CREATE ACCOUNT (STEP 1: ACADEMIC / ADMIN DOSSIER) */}
         {/* ========================================================================= */}
         {mode === 'register-step-1' && (
           <form onSubmit={handleRegisterStep1Submit} className="p-8 space-y-4 animate-fade-in">
@@ -530,10 +539,10 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
             <div className="flex items-center justify-between border-b border-champagne-500/20 pb-3">
               <div>
                 <h3 className="font-serif font-bold text-lg text-burgundy-900">
-                  Create Student Account
+                  {regData.role === 'Admin' ? 'Create Administrator Account' : 'Create Student Account'}
                 </h3>
                 <p className="text-xs text-charcoal-500">
-                  Step 1 of 2: Academic Profile & Institutional Affiliation
+                  {regData.role === 'Admin' ? 'Step 1 of 2: Administrative Credentials & Faculty Division' : 'Step 1 of 2: Academic Profile & Institutional Affiliation'}
                 </p>
               </div>
               <div className="flex items-center space-x-1.5 text-xs font-mono font-bold text-burgundy-900 bg-champagne-200 px-3 py-1 rounded-full">
@@ -543,10 +552,44 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
               </div>
             </div>
 
+            {/* Persona Switcher for Registration */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
+                Account Registration Type
+              </label>
+              <div className="grid grid-cols-2 gap-3 p-1 rounded-2xl bg-cream-200/80 border border-champagne-500/20">
+                <button
+                  type="button"
+                  onClick={() => setRegData(prev => ({ ...prev, role: 'Student', branch: 'B.Tech', course: '' }))}
+                  className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
+                    regData.role === 'Student'
+                      ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
+                      : 'text-charcoal-600 hover:text-burgundy-900'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Student Registration</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRegData(prev => ({ ...prev, role: 'Admin', branch: "Dean's Council & Academic Affairs", course: '' }))}
+                  className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
+                    regData.role === 'Admin'
+                      ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
+                      : 'text-charcoal-600 hover:text-burgundy-900'
+                  }`}
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Administrator Registration</span>
+                </button>
+              </div>
+            </div>
+
             {/* Full Name */}
             <div className="space-y-1">
               <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                Full Name
+                {regData.role === 'Admin' ? 'Administrator / Faculty Name' : 'Full Student Name'}
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-champagne-700 absolute left-3.5 top-3 pointer-events-none" />
@@ -555,7 +598,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   value={regData.name}
                   onChange={(e) => setRegData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
-                  placeholder="e.g. Aiman Vance or Shaik Aiman"
+                  placeholder={regData.role === 'Admin' ? "e.g. Dr. Evelyn Sterling or Prof. Marcus" : "e.g. Aiman Vance or Shaik Aiman"}
                   required
                 />
               </div>
@@ -573,16 +616,16 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   value={regData.collegeName}
                   onChange={(e) => setRegData(prev => ({ ...prev, collegeName: e.target.value }))}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
-                  placeholder="e.g. National Institute of Technology, Oxford, etc."
+                  placeholder="e.g. ASPIRE Institute of Technology, NIT, Oxford"
                   required
                 />
               </div>
             </div>
 
-            {/* Enrollment Number */}
+            {/* Enrollment Number / Admin Code */}
             <div className="space-y-1">
               <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                Enrollment / Student Roll Number
+                {regData.role === 'Admin' ? 'Institutional Admin Code' : 'Enrollment / Student Roll Number'}
               </label>
               <div className="relative">
                 <Hash className="w-4 h-4 text-champagne-700 absolute left-3.5 top-3 pointer-events-none" />
@@ -591,45 +634,60 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   value={regData.enrollmentNo}
                   onChange={(e) => setRegData(prev => ({ ...prev, enrollmentNo: e.target.value }))}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 font-mono text-xs font-bold focus:outline-none focus:border-champagne-500"
-                  placeholder="e.g. 2026-CS-0412 or STU-8821"
+                  placeholder={regData.role === 'Admin' ? "e.g. ADM-0042 or FAC-9021" : "e.g. 2026-CS-0412 or STU-8821"}
                   required
                 />
               </div>
             </div>
 
-            {/* Branch and Course Row */}
+            {/* Branch / Department and Course / Designation */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               
-              {/* Branch */}
+              {/* Branch / Department */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                  Academic Branch
+                  {regData.role === 'Admin' ? 'Administrative Department' : 'Academic Branch'}
                 </label>
-                <select
-                  value={regData.branch}
-                  onChange={(e) => setRegData(prev => ({ ...prev, branch: e.target.value }))}
-                  className="w-full px-3 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
-                >
-                  <option value="B.Tech">B.Tech (Bachelor of Technology)</option>
-                  <option value="BBA">BBA (Business Administration)</option>
-                  <option value="Law">Law (BA / BBA LL.B)</option>
-                  <option value="B.Sc">B.Sc (Bachelor of Science)</option>
-                  <option value="M.Tech">M.Tech / Post-Graduate</option>
-                  <option value="Other">Other Faculty</option>
-                </select>
+                {regData.role === 'Admin' ? (
+                  <select
+                    value={regData.branch}
+                    onChange={(e) => setRegData(prev => ({ ...prev, branch: e.target.value }))}
+                    className="w-full px-3 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
+                  >
+                    <option value="Dean's Council & Academic Affairs">Dean's Council & Academic Affairs</option>
+                    <option value="Faculty of Computing & AI">Faculty of Computing & AI</option>
+                    <option value="Registrar & Examination Board">Registrar & Examination Board</option>
+                    <option value="Faculty of Law & Governance">Faculty of Law & Governance</option>
+                    <option value="Business School Administration">Business School Administration</option>
+                    <option value="Institutional Analytics Division">Institutional Analytics Division</option>
+                  </select>
+                ) : (
+                  <select
+                    value={regData.branch}
+                    onChange={(e) => setRegData(prev => ({ ...prev, branch: e.target.value }))}
+                    className="w-full px-3 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
+                  >
+                    <option value="B.Tech">B.Tech (Bachelor of Technology)</option>
+                    <option value="BBA">BBA (Business Administration)</option>
+                    <option value="Law">Law (BA / BBA LL.B)</option>
+                    <option value="B.Sc">B.Sc (Bachelor of Science)</option>
+                    <option value="M.Tech">M.Tech / Post-Graduate</option>
+                    <option value="Other">Other Faculty</option>
+                  </select>
+                )}
               </div>
 
-              {/* Course / Specialization */}
+              {/* Course / Designation */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                  Course / Major
+                  {regData.role === 'Admin' ? 'Official Designation' : 'Course / Major'}
                 </label>
                 <input
                   type="text"
                   value={regData.course}
                   onChange={(e) => setRegData(prev => ({ ...prev, course: e.target.value }))}
                   className="w-full px-3 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 text-xs font-semibold focus:outline-none focus:border-champagne-500"
-                  placeholder="e.g. Computer Science, AI, Corporate Law"
+                  placeholder={regData.role === 'Admin' ? "e.g. Academic Dean, Chair, Director" : "e.g. Computer Science, AI, Corporate Law"}
                   required
                 />
               </div>
@@ -672,7 +730,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   Set Security Credentials
                 </h3>
                 <p className="text-xs text-charcoal-500">
-                  Step 2 of 2: Create password for <strong>{regData.name}</strong> ({regData.enrollmentNo})
+                  Step 2 of 2: Create password for <strong>{regData.name}</strong> ({regData.role === 'Admin' ? 'Admin Code: ' : 'Enrollment: '}{regData.enrollmentNo})
                 </p>
               </div>
               <div className="flex items-center space-x-1.5 text-xs font-mono font-bold text-champagne-950 bg-champagne-400 px-3 py-1 rounded-full">
@@ -740,10 +798,10 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
             <div className="p-3.5 rounded-xl bg-cream-200/60 border border-champagne-500/20 text-xs text-charcoal-700 space-y-1">
               <div className="font-semibold text-burgundy-900 flex items-center space-x-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Academic Record Summary</span>
+                <span>{regData.role === 'Admin' ? 'Administrative Dossier Summary' : 'Academic Record Summary'}</span>
               </div>
               <p className="text-[11px] text-charcoal-600">
-                Registering: <strong>{regData.name}</strong> · {regData.branch} ({regData.course}) at <strong>{regData.collegeName}</strong>
+                Registering: <strong>{regData.name}</strong> · {regData.role === 'Admin' ? `Admin Code: ${regData.enrollmentNo} · ${regData.branch} (${regData.course})` : `${regData.branch} (${regData.course})`} at <strong>{regData.collegeName}</strong>
               </p>
             </div>
 
@@ -775,7 +833,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
         {/* MODE 4: FORGOT PASSWORD (STEP 1: VERIFY IDENTITY) */}
         {/* ========================================================================= */}
         {mode === 'forgot-verify' && (
-          <form onSubmit={handleForgotVerifySubmit} className="p-8 space-y-5 animate-fade-in">
+          <form onSubmit={handleForgotVerifySubmit} className="p-8 space-y-4 animate-fade-in">
             
             <div className="flex items-center justify-between border-b border-champagne-500/20 pb-3">
               <div>
@@ -783,20 +841,54 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   Password Recovery
                 </h3>
                 <p className="text-xs text-charcoal-500">
-                  Step 1: Verify your registered academic record
+                  Step 1: Verify your registered institutional credentials
                 </p>
               </div>
               <HelpCircle className="w-5 h-5 text-champagne-700" />
             </div>
 
+            {/* Persona Switcher for Forgot Password */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
+                Account Persona to Recover
+              </label>
+              <div className="grid grid-cols-2 gap-3 p-1 rounded-2xl bg-cream-200/80 border border-champagne-500/20">
+                <button
+                  type="button"
+                  onClick={() => { setForgotRole('Student'); setForgotIdentifier(''); }}
+                  className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
+                    forgotRole === 'Student'
+                      ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
+                      : 'text-charcoal-600 hover:text-burgundy-900'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Student Account</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setForgotRole('Admin'); setForgotIdentifier(''); }}
+                  className={`py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
+                    forgotRole === 'Admin'
+                      ? 'bg-burgundy-900 text-champagne-300 shadow-md border border-champagne-500/40'
+                      : 'text-charcoal-600 hover:text-burgundy-900'
+                  }`}
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Administrator Account</span>
+                </button>
+              </div>
+            </div>
+
             <p className="text-xs text-charcoal-600 leading-relaxed font-light">
-              Enter the <strong>Enrollment Number</strong> (or registered email) and the <strong>College Name</strong> you entered during registration.
+              Enter your registered {forgotRole === 'Admin' ? <strong>Admin Code</strong> : <strong>Enrollment Number</strong>} (or official email) and the <strong>College Name</strong> used during registration.
             </p>
 
             {/* Identifier */}
             <div className="space-y-1">
               <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wide">
-                Registered Enrollment No. or Email ID
+                {forgotRole === 'Admin' ? 'Registered Admin Code or Official Email' : 'Registered Enrollment No. or Email ID'}
               </label>
               <div className="relative">
                 <Hash className="w-4 h-4 text-champagne-700 absolute left-3.5 top-3 pointer-events-none" />
@@ -805,7 +897,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   value={forgotIdentifier}
                   onChange={(e) => setForgotIdentifier(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream-100 border border-champagne-500/30 text-charcoal-900 font-mono text-xs font-semibold focus:outline-none focus:border-champagne-500"
-                  placeholder="e.g. STU-8821 or student@analytics.edu"
+                  placeholder={forgotRole === 'Admin' ? "e.g. ADM-0042 or dean@aspire.edu" : "e.g. STU-8821 or student@analytics.edu"}
                   required
                 />
               </div>
@@ -845,7 +937,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                 disabled={isLoading}
                 className="px-6 py-2.5 rounded-xl gold-gradient-bg text-burgundy-950 font-bold text-xs uppercase tracking-wider transition-all shadow-sm hover:scale-105 active:scale-95 flex items-center space-x-1.5"
               >
-                <span>{isLoading ? 'Verifying...' : 'Verify Academic Record'}</span>
+                <span>{isLoading ? 'Verifying Credentials...' : (forgotRole === 'Admin' ? 'Verify Admin Credentials' : 'Verify Academic Record')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -865,7 +957,7 @@ export const AuthScreen = ({ onLogin, initialUser }) => {
                   Set New Password
                 </h3>
                 <p className="text-xs text-charcoal-500">
-                  Verified Identity: <strong>{verifiedAccount?.name}</strong> ({verifiedAccount?.enrollmentNo})
+                  Verified {verifiedAccount?.role === 'Admin' ? 'Administrator' : 'Student'}: <strong>{verifiedAccount?.name}</strong> ({verifiedAccount?.role === 'Admin' ? 'Admin Code: ' : 'Enrollment: '}{verifiedAccount?.enrollmentNo})
                 </p>
               </div>
               <ShieldCheck className="w-6 h-6 text-emerald-700" />

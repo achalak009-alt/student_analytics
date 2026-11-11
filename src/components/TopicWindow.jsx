@@ -250,7 +250,9 @@ export const TopicWindow = ({
               </div>
               <div className="text-xs">
                 <span className="font-bold text-burgundy-900 block">{user.name}</span>
-                <span className="text-[10px] text-charcoal-500 block">ID: {user.id} · {user.standing}</span>
+                <span className="text-[10px] text-charcoal-500 block">
+                  {user.role === 'Admin' ? `Admin Code: ${user.id}` : `Enrollment: ${user.id}`} · {user.standing}
+                </span>
               </div>
             </div>
 

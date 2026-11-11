@@ -78,7 +78,9 @@ export const ProfileModal = ({
               <p className="text-xs text-charcoal-600 font-medium">{user.degree}</p>
               
               <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-charcoal-500">
-                <span className="bg-cream-200 px-2 py-0.5 rounded font-mono">ID: {user.id}</span>
+                <span className="bg-cream-200 px-2 py-0.5 rounded font-mono">
+                  {user.role === 'Admin' ? `Admin Code: ${user.id}` : `Enrollment No: ${user.id}`}
+                </span>
                 <span className="bg-cream-200 px-2 py-0.5 rounded">{user.cohort}</span>
                 <span className="bg-champagne-100 text-champagne-800 font-semibold px-2 py-0.5 rounded">{user.standing}</span>
               </div>
